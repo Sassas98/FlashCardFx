@@ -24,6 +24,19 @@ dependencies {
 
     // This dependency is used by the application.
     implementation libs.guava
+
+    
+    // Hibernate ORM con Jakarta Persistence
+    implementation 'org.hibernate.orm:hibernate-core:6.6.9.Final'
+
+    // Jakarta Persistence API, utile per usare EntityManager, Entity, Id, ecc.
+    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
+
+    // H2 database file-based
+    runtimeOnly 'com.h2database:h2:2.4.240'
+
+    // Logging semplice, perché Hibernate altrimenti spesso si lamenta
+    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
 }
 
 // Apply a specific Java toolchain to ease working on different environments.
@@ -49,21 +62,4 @@ javafx {
             'javafx.controls',
             'javafx.fxml'
     ]
-}
-
-dependencies {
-    // Hibernate ORM con Jakarta Persistence
-    implementation 'org.hibernate.orm:hibernate-core:6.6.9.Final'
-
-    // Jakarta Persistence API, utile per usare EntityManager, Entity, Id, ecc.
-    implementation 'jakarta.persistence:jakarta.persistence-api:3.1.0'
-
-    // H2 database file-based
-    runtimeOnly 'com.h2database:h2:2.4.240'
-
-    // Logging semplice, perché Hibernate altrimenti spesso si lamenta
-    runtimeOnly 'org.slf4j:slf4j-simple:2.0.16'
-
-    testImplementation platform('org.junit:junit-bom:5.10.3')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
 }
