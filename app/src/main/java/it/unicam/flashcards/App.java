@@ -1,6 +1,14 @@
 package it.unicam.flashcards;
 
+import it.unicam.flashcards.controller.AbstractCardAdder;
+import it.unicam.flashcards.controller.AbstractCardDeleter;
+import it.unicam.flashcards.controller.AbstractFlippableCardCollectionGetter;
+import it.unicam.flashcards.controller.FlashCardAdder;
+import it.unicam.flashcards.controller.FlashCardDeckGetter;
+import it.unicam.flashcards.controller.FlashCardDeleter;
+import it.unicam.flashcards.model.context.CardRepository;
 import it.unicam.flashcards.model.context.JpaUtil;
+import it.unicam.flashcards.view.HomeController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
@@ -19,11 +27,31 @@ import java.net.URL;
 public class App extends Application {
 
     /**
+     * Repository usato per accedere ai dati delle flashcard tramite JPA.
+     */
+    private CardRepository cardRepository;
+
+    /**
+     * Servizio responsabile dell'aggiunta di nuove flashcard.
+     */
+    private AbstractCardAdder cardAdder;
+
+    /**
+     * Servizio responsabile del recupero e della gestione del mazzo di flashcard.
+     */
+    private AbstractFlippableCardCollectionGetter cardGetter;
+
+    /**
+     * Servizio responsabile dell'eliminazione delle flashcard.
+     */
+    private AbstractCardDeleter cardDeleter;
+
+    /**
      * Avvia l'applicazione JavaFX.
      *
      * <p>
-     * Il metodo carica la vista principale da FXML
-     * e mostra la finestra principale.
+     * Il metodo inizializza le dipendenze, carica la vista principale da FXML,
+     * configura la factory dei controller e mostra la finestra principale.
      * </p>
      *
      * @param stage finestra principale dell'applicazione
@@ -31,6 +59,8 @@ public class App extends Application {
      */
     @Override
     public void start(Stage stage) throws Exception {
+        initializeDependencies();
+
         URL fxmlUrl = App.class.getResource("/fxml/home.fxml");
 
         if (fxmlUrl == null) {
@@ -39,6 +69,23 @@ public class App extends Application {
 
         FXMLLoader loader = new FXMLLoader(fxmlUrl);
 
+        /*
+         * Factory personalizzata per creare i controller FXML.
+         * Serve a iniettare manualmente le dipendenze nei controller
+         * che non hanno un costruttore vuoto.
+         */
+        loader.setControllerFactory(controllerClass -> {
+            if (controllerClass == HomeController.class) {
+                return new HomeController(cardGetter, cardAdder, cardDeleter);
+            }
+
+            try {
+                return controllerClass.getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException("Impossibile creare il controller: " + controllerClass, e);
+            }
+        });
+
         Scene scene = new Scene(loader.load(), 1050, 700);
 
         stage.setTitle("FlashCards");
@@ -46,6 +93,22 @@ public class App extends Application {
         stage.setMinHeight(600);
         stage.setScene(scene);
         stage.show();
+    }
+
+    /**
+     * Inizializza le dipendenze principali dell'applicazione.
+     *
+     * <p>
+     * Il repository viene creato per primo e poi condiviso tra i servizi
+     * che gestiscono le operazioni sulle flashcard.
+     * </p>
+     */
+    private void initializeDependencies() {
+        this.cardRepository = new CardRepository();
+
+        this.cardAdder = new FlashCardAdder(cardRepository);
+        this.cardGetter = new FlashCardDeckGetter(cardRepository);
+        this.cardDeleter = new FlashCardDeleter(cardRepository);
     }
 
     /**

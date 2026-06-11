@@ -3,23 +3,89 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="it.unicam.flashcards.view.HomeController"
-      alignment="CENTER"
-      spacing="16">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="it.unicam.flashcards.view.HomeController"
+            style="-fx-background-color: linear-gradient(to bottom right, #F8FAFC, #EEF2FF);">
 
-    <padding>
-        <Insets top="24" right="24" bottom="24" left="24"/>
-    </padding>
+    <top>
+        <VBox spacing="18" BorderPane.alignment="CENTER">
+            <padding>
+                <Insets top="34" right="40" bottom="18" left="40"/>
+            </padding>
 
-    <Label fx:id="counterLabel"
-           text="Premuto 0 volte"
-           style="-fx-font-size: 20px; -fx-font-weight: bold;"/>
+            <HBox alignment="CENTER_LEFT" spacing="18">
+                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                    <Label text="FlashCards"
+                           style="-fx-font-size: 34px;
+                                  -fx-font-weight: 900;
+                                  -fx-text-fill: #111827;"/>
+                </VBox>
 
-    <Button text="Premimi"
-            onAction="#onButtonClicked"/>
+                <Button fx:id="deleteAllButton"
+                        text="Svuota"
+                        onAction="#onDeleteAllClicked"
+                        style="-fx-background-color: #FEE2E2;
+                               -fx-text-fill: #991B1B;
+                               -fx-font-weight: 800;
+                               -fx-background-radius: 999;
+                               -fx-padding: 11 18 11 18;
+                               -fx-cursor: hand;"/>
 
-</VBox>
+                <Button fx:id="addButton"
+                        text="+ Nuova card"
+                        onAction="#onOpenAddModalClicked"
+                        style="-fx-background-color: #4F46E5;
+                               -fx-text-fill: white;
+                               -fx-font-weight: 900;
+                               -fx-background-radius: 999;
+                               -fx-padding: 11 20 11 20;
+                               -fx-cursor: hand;
+                               -fx-effect: dropshadow(gaussian, rgba(79,70,229,0.35), 16, 0.25, 0, 7);"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="18">
+            <padding>
+                <Insets top="12" right="40" bottom="36" left="40"/>
+            </padding>
+
+            <Label fx:id="emptyLabel"
+                   text="Il mazzo di flashcards è attualmente vuoto."
+                   style="-fx-font-size: 16px;
+                          -fx-text-fill: #6B7280;
+                          -fx-background-color: rgba(255,255,255,0.75);
+                          -fx-background-radius: 22;
+                          -fx-padding: 24;
+                          -fx-border-color: #E5E7EB;
+                          -fx-border-radius: 22;"/>
+
+            <ScrollPane fx:id="scrollPane"
+                        fitToWidth="true"
+                        style="-fx-background-color: transparent;
+                               -fx-background: transparent;
+                               -fx-border-color: transparent;">
+                <content>
+                    <FlowPane fx:id="cardsPane"
+                              hgap="22"
+                              vgap="22"
+                              prefWrapLength="900"
+                              style="-fx-background-color: transparent;">
+                        <padding>
+                            <Insets top="8" right="8" bottom="28" left="8"/>
+                        </padding>
+                    </FlowPane>
+                </content>
+            </ScrollPane>
+        </VBox>
+    </center>
+
+</BorderPane>
